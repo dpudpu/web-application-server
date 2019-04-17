@@ -18,8 +18,8 @@ public class DefaultServlet extends HttpServlet {
     protected void doGet(Request req, Response res) throws ServletException, IOException {
         String path = req.getPath();
         if (path.equals("/"))
-            res.setResponseDispatcher(path + DEFAULT_PATH);
+            res.forward(path + DEFAULT_PATH);
         else
-            res.setResponseDispatcher(path);
+            res.forward(path);
     }
 }

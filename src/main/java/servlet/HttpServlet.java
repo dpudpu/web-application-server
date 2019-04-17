@@ -32,7 +32,6 @@ public abstract class HttpServlet {
         }
 
         writeResponse(res);
-
     }
 
     private void writeResponse(Response res) throws IOException {
@@ -56,7 +55,7 @@ public abstract class HttpServlet {
             res.response302Header(dos, file.length());
     }
 
-    protected void readBody(Request req) throws IOException {
+    private void readBody(Request req) throws IOException {
         int contentLength = Integer.parseInt(req.getHeader("Content-Length"));
         String body = IOUtils.readData(req.getBr(), contentLength);
         req.setParameter(body);

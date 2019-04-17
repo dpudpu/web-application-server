@@ -19,7 +19,7 @@ public class SignUpServlet extends DefaultServlet {
         User user = new User(userId, password, name, email);
         DataBase.addUser(user);;
 
-        res.setResponseDispatcher("/index.html");
+        res.forward("/index.html");
 
 //        res.sendRedirect("/index.html");
     }

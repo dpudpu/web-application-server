@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import servlet.DefaultServlet;
 import servlet.HttpServlet;
+import servlet.LoginServlet;
 import servlet.SignUpServlet;
 
 public class RequestHandler extends Thread {
@@ -30,16 +31,19 @@ public class RequestHandler extends Thread {
             Response response = new Response(dos);
 
             HttpServlet httpServlet;
-
-            if(request.getPath().equals("/user/create")){
+            String path =request.getPath();
+            if(path.equals("/user/create")){
                 httpServlet = new SignUpServlet();
-            }else {
+            }else if(path.equals("/user/login")){
+                httpServlet = new LoginServlet();
+            }
+            else {
                 httpServlet = new DefaultServlet();
             }
 
             httpServlet.service(request, response);
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error(e.getMessage());
         }
     }

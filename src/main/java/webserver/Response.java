@@ -2,15 +2,21 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import servlet.HttpServlet;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Response {
     private static final Logger log = LoggerFactory.getLogger(Response.class);
 
+    private static Map<String, String> cookies = new HashMap<>();
+    private boolean isAddCookie = false;
     private DataOutputStream dos;
     private String responseDispatcher;
+
 
     public Response(DataOutputStream dos) {
         this.dos = dos;
@@ -20,7 +26,7 @@ public class Response {
         return responseDispatcher;
     }
 
-    public void setResponseDispatcher(String responseDispatcher) {
+    public void forward(String responseDispatcher) {
         this.responseDispatcher = responseDispatcher;
     }
 
@@ -30,6 +36,7 @@ public class Response {
             dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
             dos.writeBytes("Location: "+responseDispatcher+ "\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
+            writeCookies(dos);
             dos.writeBytes("\r\n");
         } catch (IOException e) {
             log.error(e.getMessage());
@@ -41,6 +48,7 @@ public class Response {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
             dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
+            writeCookies(dos);
             dos.writeBytes("\r\n");
         } catch (IOException e) {
             log.error(e.getMessage());
@@ -51,10 +59,27 @@ public class Response {
         try {
             dos.writeBytes("HTTP/1.1 404 NOT FOUND");
             dos.writeBytes("Content-Type: text/html; charset=UTF-8");
+            writeCookies(dos);
             dos.writeBytes("\r\n");
         } catch (IOException e) {
             log.error(e.getMessage());
         }
+    }
+
+    public void addCookie(String key, String value){
+        cookies.put(key,value);
+        isAddCookie = true;
+    }
+
+    private void writeCookies(DataOutputStream dos) throws IOException {
+        if (!isAddCookie)
+            return;
+
+        dos.writeBytes("Set-Cookie: ");
+        for(String key : cookies.keySet() )
+            dos.writeBytes(key+"="+cookies.get(key)+"; ");
+        dos.writeBytes("\r\n");
+        isAddCookie=false;
     }
 
     public void responseBody(DataOutputStream dos, byte[] body) {
