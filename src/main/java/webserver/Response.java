@@ -57,4 +57,8 @@ public class Response {
     public DataOutputStream getDos() {
         return dos;
     }
+
+    public void sendRedirect(String path) {
+
+    }
 }
