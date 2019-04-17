@@ -11,8 +11,6 @@ import java.util.Map;
 
 public class Request {
     private static final Logger log = LoggerFactory.getLogger(Request.class);
-    private static final String DEFAULT_PATH = "./webapp";
-    private static final String DEFAULT_ROOT = "/index.html";
 
     private Map<String, String> headers;
     private Map<String, String> parameter;

@@ -5,10 +5,7 @@ import java.net.Socket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import servlet.DefaultServlet;
-import servlet.HttpServlet;
-import servlet.LoginServlet;
-import servlet.SignUpServlet;
+import servlet.*;
 
 public class RequestHandler extends Thread {
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
@@ -36,6 +33,8 @@ public class RequestHandler extends Thread {
                 httpServlet = new SignUpServlet();
             }else if(path.equals("/user/login")){
                 httpServlet = new LoginServlet();
+            }else if(path.equals("/user/list")){
+                httpServlet = new ListServlet();
             }
             else {
                 httpServlet = new DefaultServlet();

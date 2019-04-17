@@ -14,12 +14,17 @@ import java.nio.file.Files;
 
 public abstract class HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(Response.class);
-    private static final String DEFAULT_ROOT = "./webapp";
+    private static final String PREFIX = "./webapp";
 
     private String method;
 
     public void service(Request req, Response res) throws ServletException, IOException {
         method = req.getMethod();
+
+        if (req.getPath().indexOf(".css") != -1) {
+            writeCssResponse(req,res);
+            return;
+        }
 
         if (method.equals("GET")) {
             doGet(req, res);
@@ -35,12 +40,26 @@ public abstract class HttpServlet {
     }
 
     private void writeResponse(Response res) throws IOException {
-        String path = DEFAULT_ROOT + res.getResponseDispatcher();
+        String path = PREFIX + res.getResponseDispatcher();
 
         DataOutputStream dos = res.getDos();
         File file = new File(path);
         if (file.exists()) {
             writeResponseLineAndHeaders(res, dos, file);
+            res.responseBody(dos, Files.readAllBytes(new File(path).toPath()));
+            return;
+        }
+        res.response400Header(dos);
+
+    }
+
+    private void writeCssResponse(Request req, Response res) throws IOException {
+        String path = PREFIX + req.getPath();
+
+        DataOutputStream dos = res.getDos();
+        File file = new File(path);
+        if (file.exists()) {
+            res.responseCssHeader(dos, file.length());
             res.responseBody(dos, Files.readAllBytes(new File(path).toPath()));
             return;
         }

@@ -3,6 +3,7 @@ package webserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import servlet.HttpServlet;
+import util.HttpRequestUtils;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -55,11 +56,21 @@ public class Response {
         }
     }
 
+    public void responseCssHeader(DataOutputStream dos, long lengthOfBodyContent) {
+        try {
+            dos.writeBytes("HTTP/1.1 200 OK \r\n");
+            dos.writeBytes("Content-Type: text/css;charset=utf-8\r\n");
+            writeCookies(dos);
+            dos.writeBytes("\r\n");
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+    }
+
     public void response400Header(DataOutputStream dos) {
         try {
             dos.writeBytes("HTTP/1.1 404 NOT FOUND");
             dos.writeBytes("Content-Type: text/html; charset=UTF-8");
-            writeCookies(dos);
             dos.writeBytes("\r\n");
         } catch (IOException e) {
             log.error(e.getMessage());
@@ -89,6 +100,12 @@ public class Response {
         } catch (IOException e) {
             log.error(e.getMessage());
         }
+    }
+
+    public String getCookie(String key, Request req) {
+        String headerCookies = req.getHeader("Cookie");
+        cookies = HttpRequestUtils.parseCookies(headerCookies == null? "":headerCookies);
+        return cookies.getOrDefault(key,"");
     }
 
     public DataOutputStream getDos() {
