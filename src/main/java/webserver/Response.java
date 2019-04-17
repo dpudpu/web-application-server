@@ -10,9 +10,18 @@ public class Response {
     private static final Logger log = LoggerFactory.getLogger(Response.class);
 
     private DataOutputStream dos;
+    private String responseDispatcher;
 
     public Response(DataOutputStream dos) {
         this.dos = dos;
+    }
+
+    public String getResponseDispatcher() {
+        return responseDispatcher;
+    }
+
+    public void setResponseDispatcher(String responseDispatcher) {
+        this.responseDispatcher = responseDispatcher;
     }
 
     public void response200Header(DataOutputStream dos, long lengthOfBodyContent) {
