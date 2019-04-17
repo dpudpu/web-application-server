@@ -24,6 +24,18 @@ public class Response {
         this.responseDispatcher = responseDispatcher;
     }
 
+    public void response302Header(DataOutputStream dos, long lengthOfBodyContent) {
+        try {
+            dos.writeBytes("HTTP/1.1 302 OK \r\n");
+            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
+            dos.writeBytes("Location: "+responseDispatcher+ "\r\n");
+            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
+            dos.writeBytes("\r\n");
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+    }
+
     public void response200Header(DataOutputStream dos, long lengthOfBodyContent) {
         try {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
